@@ -4,5 +4,9 @@
 {% endblock %}
 
 {% block body %}
-	<h1>Hello HomeController!</h1>
+	<section class="p-12">
+		<ul role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+			{% include 'parts/cards.html.twig' %}
+		</ul>
+	</section>
 {% endblock %}
