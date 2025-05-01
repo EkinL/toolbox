@@ -13,7 +13,10 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < 10; $i++) {
             $user = new User();
             $user->setEmail('user' . $i . '@example.com');
-            $user->setPassword('password' . $i);
+            $user->setLastName('LastName' . $i);
+            $user->setFirstName('FirstName' . $i);
+            $password = password_hash('password' . $i, PASSWORD_BCRYPT);
+            $user->setPassword($password);
             $user->setRoles(['ROLE_USER']);
             $manager->persist($user);
         }
