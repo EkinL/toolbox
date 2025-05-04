@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\ToolboxStatusEnum;
 use App\Repository\ToolboxRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
@@ -26,6 +27,9 @@ class Toolbox
 
     #[ORM\Column]
     private ?\DateTimeImmutable $UpdatedAt = null;
+
+    #[ORM\Column(enumType: ToolboxStatusEnum::class)]
+    private ?ToolboxStatusEnum $status = null;
 
     public function getId(): ?Uuid
     {
@@ -76,6 +80,18 @@ class Toolbox
     public function setUpdatedAt(\DateTimeImmutable $UpdatedAt): static
     {
         $this->UpdatedAt = $UpdatedAt;
+
+        return $this;
+    }
+
+    public function getStatus(): ?ToolboxStatusEnum
+    {
+        return $this->status;
+    }
+
+    public function setStatus(ToolboxStatusEnum $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }

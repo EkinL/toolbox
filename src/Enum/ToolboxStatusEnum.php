@@ -10,14 +10,4 @@ enum ToolboxStatusEnum: string
     case INACTIVE = 'inactive';
     case MAINTENANCE = 'maintenance';
     case ARCHIVED = 'archived';
-
-    public function getLabel(): string
-    {
-        return match ($this) {
-            self::ACTIVE => 'Active',
-            self::INACTIVE => 'Inactive',
-            self::MAINTENANCE => 'Maintenance',
-            self::ARCHIVED => 'Archived',
-        };
-    }
 }

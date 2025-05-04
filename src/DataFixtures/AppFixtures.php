@@ -6,6 +6,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use App\Entity\User;
 use App\Entity\Toolbox;
+use App\Enum\ToolboxStatusEnum;
 
 class AppFixtures extends Fixture
 {
@@ -22,12 +23,16 @@ class AppFixtures extends Fixture
             $manager->persist($user);
         }
         
+
         for ($i = 0; $i < 10; $i++) {
             $toolbox = new Toolbox();
             $toolbox->setTitle('Toolbox' . $i);
             $toolbox->setDescription('Description of Toolbox' . $i);
             $toolbox->setCreatedAt(new \DateTimeImmutable());
             $toolbox->setUpdatedAt(new \DateTimeImmutable());
+            $statuses = ['active', 'inactive', 'maintenance', 'archived'];
+            $randomStatus = $statuses[array_rand($statuses)];
+            $toolbox->setStatus(ToolboxStatusEnum::from($randomStatus));
             $manager->persist($toolbox);
         }
 
