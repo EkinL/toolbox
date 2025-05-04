@@ -14,12 +14,6 @@ class TeamForm extends AbstractType
         $builder
             ->add('name')
             ->add('description')
-            ->add('CreatedAt', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('UpdatedAt', null, [
-                'widget' => 'single_text',
-            ])
         ;
     }
 
