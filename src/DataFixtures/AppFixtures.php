@@ -7,6 +7,7 @@ use Doctrine\Persistence\ObjectManager;
 use App\Entity\User;
 use App\Entity\Toolbox;
 use App\Enum\ToolboxStatusEnum;
+use App\Entity\Team;
 
 class AppFixtures extends Fixture
 {
@@ -36,8 +37,24 @@ class AppFixtures extends Fixture
             $manager->persist($toolbox);
         }
 
-        $manager->flush();
+        $teams = [
+            'Pôle Sécurité' => 'Responsable de la sécurité des systèmes d’information.',
+            'Pôle Développement SaaS' => 'Développement et maintenance des applications SaaS.',
+            'Pôle Infrastructure' => 'Gestion des serveurs, réseaux et infrastructures cloud.',
+            'Pôle Support Client' => 'Assistance technique et relation client.',
+            'Pôle Ressources Humaines et Administration' => 'Gestion RH, administrative et juridique.'
+        ];
+        
+        foreach ($teams as $teamName => $description) {
+            $team = new Team();
+            $team->setName($teamName);
+            $team->setDescription($description);
+            $team->setCreatedAt(new \DateTimeImmutable());
+            $team->setUpdatedAt(new \DateTimeImmutable());
+            $manager->persist($team);
+        }
 
+        $manager->flush();
 
     }
 }
