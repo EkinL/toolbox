@@ -27,6 +27,12 @@ class Team
     #[ORM\Column]
     private ?\DateTimeImmutable $UpdatedAt = null;
 
+    public function __construct()
+    {
+        $this->CreatedAt = new \DateTimeImmutable();
+        $this->UpdatedAt = new \DateTimeImmutable();
+    }
+
     public function getId(): ?Uuid
     {
         return $this->id;
