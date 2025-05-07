@@ -13,7 +13,30 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        for ($i = 0; $i < 10; ++$i) {
+        // Création des teams
+        $teams = [
+            'Pôle Sécurité' => 'Responsable de la sécurité des systèmes d’information.',
+            'Pôle Développement SaaS' => 'Développement et maintenance des applications SaaS.',
+            'Pôle Infrastructure' => 'Gestion des serveurs, réseaux et infrastructures cloud.',
+            'Pôle Support Client' => 'Assistance technique et relation client.',
+            'Pôle Ressources Humaines et Administration' => 'Gestion RH, administrative et juridique.',
+        ];
+
+        $teamEntities = [];
+
+        foreach ($teams as $teamName => $description) {
+            $team = new Team();
+            $team->setName($teamName);
+            $team->setDescription($description);
+            $team->setCreatedAt(new \DateTimeImmutable());
+            $team->setUpdatedAt(new \DateTimeImmutable());
+            $manager->persist($team);
+            $teamEntities[] = $team;
+        }
+
+        // Création des utilisateurs (au moins 1 par team)
+        $totalUsers = 10;
+        for ($i = 0; $i < $totalUsers; ++$i) {
             $user = new User();
             $user->setEmail('user'.$i.'@example.com');
             $user->setLastName('LastName'.$i);
@@ -21,9 +44,19 @@ class AppFixtures extends Fixture
             $password = password_hash('password'.$i, PASSWORD_BCRYPT);
             $user->setPassword($password);
             $user->setRoles(['ROLE_USER']);
+
+            // Attribution à une team existante
+            // Les 5 premiers users vont aux 5 teams, les autres de manière aléatoire
+            if ($i < count($teamEntities)) {
+                $user->setTeam($teamEntities[$i]);
+            } else {
+                $user->setTeam($teamEntities[array_rand($teamEntities)]);
+            }
+
             $manager->persist($user);
         }
 
+        // Création des toolboxes
         for ($i = 0; $i < 10; ++$i) {
             $toolbox = new Toolbox();
             $toolbox->setTitle('Toolbox'.$i);
@@ -34,23 +67,6 @@ class AppFixtures extends Fixture
             $randomStatus = $statuses[array_rand($statuses)];
             $toolbox->setStatus(ToolboxStatusEnum::from($randomStatus));
             $manager->persist($toolbox);
-        }
-
-        $teams = [
-            'Pôle Sécurité' => 'Responsable de la sécurité des systèmes d’information.',
-            'Pôle Développement SaaS' => 'Développement et maintenance des applications SaaS.',
-            'Pôle Infrastructure' => 'Gestion des serveurs, réseaux et infrastructures cloud.',
-            'Pôle Support Client' => 'Assistance technique et relation client.',
-            'Pôle Ressources Humaines et Administration' => 'Gestion RH, administrative et juridique.',
-        ];
-
-        foreach ($teams as $teamName => $description) {
-            $team = new Team();
-            $team->setName($teamName);
-            $team->setDescription($description);
-            $team->setCreatedAt(new \DateTimeImmutable());
-            $team->setUpdatedAt(new \DateTimeImmutable());
-            $manager->persist($team);
         }
 
         $manager->flush();

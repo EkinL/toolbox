@@ -42,6 +42,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $Firstname = null;
 
+    #[ORM\ManyToOne(inversedBy: 'userId')]
+    private ?Team $team = null;
+
     public function getId(): ?Uuid
     {
         return $this->id;
@@ -135,6 +138,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFirstname(string $Firstname): static
     {
         $this->Firstname = $Firstname;
+
+        return $this;
+    }
+
+    public function getTeam(): ?Team
+    {
+        return $this->team;
+    }
+
+    public function setTeam(?Team $team): static
+    {
+        $this->team = $team;
 
         return $this;
     }
