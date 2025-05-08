@@ -44,13 +44,13 @@ class AppFixtures extends Fixture
             $password = password_hash('password'.$i, PASSWORD_BCRYPT);
             $user->setPassword($password);
             $user->setRoles(['ROLE_USER']);
-
-            // Attribution à une team existante
-            // Les 5 premiers users vont aux 5 teams, les autres de manière aléatoire
             if ($i < count($teamEntities)) {
                 $user->setTeam($teamEntities[$i]);
             } else {
                 $user->setTeam($teamEntities[array_rand($teamEntities)]);
+            }
+            if ($i === 0) {
+                $user->setRoles(['ROLE_ADMIN']);
             }
 
             $manager->persist($user);

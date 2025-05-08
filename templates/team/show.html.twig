@@ -26,14 +26,6 @@
 					<dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ team.description }}</dd>
 				</div>
 				<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-					<dt class="text-sm/6 font-medium text-gray-900">Email address</dt>
-					<dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">margotfoster@example.com</dd>
-				</div>
-				<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-					<dt class="text-sm/6 font-medium text-gray-900">Salary expectation</dt>
-					<dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">$120,000</dd>
-				</div>
-				<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 					<dt class="text-sm/6 font-medium text-gray-900">CreatedAt
 						<br/>
 						UpdatedAt</dt>
@@ -63,8 +55,7 @@
 										<a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">See</a>
 									</div>
 								</li>
-								{% if not loop.last %},
-								{% endif %}
+								{% if not loop.last %}{% endif %}
 							{% endfor %}
 						</ul>
 					</dd>
@@ -80,6 +71,4 @@
 			{{ include('team/_delete_form.html.twig') }}
 		</span>
 	</div>
-
-	{{ include('team/_delete_form.html.twig') }}
 {% endblock %}
