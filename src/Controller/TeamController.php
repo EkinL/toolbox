@@ -17,10 +17,20 @@ final class TeamController extends AbstractController
     #[Route(name: 'app_team_index', methods: ['GET'])]
     public function index(TeamRepository $teamRepository): Response
     {
+        $teams = $teamRepository->findAll();
+
+        // Prépare une structure avec les utilisateurs groupés par équipe
+        $usersByTeam = [];
+        foreach ($teams as $team) {
+            $usersByTeam[$team->getName()] = $team->getUserId(); // Ou getId() si tu veux grouper par ID
+        }
+
         return $this->render('team/index.html.twig', [
-            'teams' => $teamRepository->findAll(),
+            'teams' => $teams,
+            'usersByTeam' => $usersByTeam,
         ]);
     }
+
 
     #[Route('/new', name: 'app_team_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
