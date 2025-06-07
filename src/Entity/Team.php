@@ -35,11 +35,18 @@ class Team
     #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'team')]
     private Collection $userId;
 
+    /**
+     * @var Collection<int, Toolbox>
+     */
+    #[ORM\ManyToMany(targetEntity: Toolbox::class, mappedBy: 'teamId')]
+    private Collection $toolboxes;
+
     public function __construct()
     {
         $this->CreatedAt = new \DateTimeImmutable();
         $this->UpdatedAt = new \DateTimeImmutable();
         $this->userId = new ArrayCollection();
+        $this->toolboxes = new ArrayCollection();
     }
 
     public function getId(): ?Uuid
@@ -120,6 +127,33 @@ class Team
             if ($userId->getTeam() === $this) {
                 $userId->setTeam(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Toolbox>
+     */
+    public function getToolboxes(): Collection
+    {
+        return $this->toolboxes;
+    }
+
+    public function addToolbox(Toolbox $toolbox): static
+    {
+        if (!$this->toolboxes->contains($toolbox)) {
+            $this->toolboxes->add($toolbox);
+            $toolbox->addTeamId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeToolbox(Toolbox $toolbox): static
+    {
+        if ($this->toolboxes->removeElement($toolbox)) {
+            $toolbox->removeTeamId($this);
         }
 
         return $this;

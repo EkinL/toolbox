@@ -56,6 +56,8 @@ class AppFixtures extends Fixture
             $manager->persist($user);
         }
 
+        $toolboxEntities = [];
+
         // Création des toolboxes
         for ($i = 0; $i < 10; ++$i) {
             $toolbox = new Toolbox();
@@ -67,6 +69,15 @@ class AppFixtures extends Fixture
             $randomStatus = $statuses[array_rand($statuses)];
             $toolbox->setStatus(ToolboxStatusEnum::from($randomStatus));
             $manager->persist($toolbox);
+
+            $toolboxEntities[] = $toolbox;
+        }
+
+        foreach ($toolboxEntities as $toolbox) {
+            $randomTeams = array_rand($teamEntities, rand(1, 3));
+            foreach ((array) $randomTeams as $key) {
+                $toolbox->addTeamId($teamEntities[$key]);
+            }
         }
 
         $manager->flush();
