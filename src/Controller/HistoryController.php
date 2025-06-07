@@ -22,6 +22,37 @@ final class HistoryController extends AbstractController
         ]);
     }
 
+        #[Route('/export', name: 'app_history_export', methods: ['GET'])]
+    public function export(HistoryRepository $historyRepository): Response
+    {
+        $histories = $historyRepository->findAll();
+
+        $csvRows = [['Nom', 'Email', 'Titre', 'Date']];
+
+        foreach ($histories as $history) {
+            $user = $history->getUserId();
+            $nom = $user ? trim(($user->getLastname() ?? '') . ' ' . ($user->getFirstname() ?? '')) : 'Anonyme';
+            $email = $user ? $user->getEmail() : 'anonyme@inconnu.local';
+            $title = $history->getTitle() ?? 'N/A';
+            $date = $history->getCreatedAt()?->format('Y-m-d H:i:s') ?? '';
+
+            $csvRows[] = [$nom, $email, $title, $date];
+        }
+
+        $handle = fopen('php://temp', 'r+');
+        foreach ($csvRows as $row) {
+            fputcsv($handle, $row);
+        }
+        rewind($handle);
+        $csvContent = stream_get_contents($handle);
+        fclose($handle);
+
+        return new Response($csvContent, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="history_export.csv"',
+        ]);
+    }
+
     #[Route('/new', name: 'app_history_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -98,6 +129,6 @@ final class HistoryController extends AbstractController
         $entityManager->persist($history);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_history_index');
+        return $this->redirectToRoute('app_home');
     }
 }

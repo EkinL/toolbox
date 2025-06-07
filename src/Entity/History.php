@@ -62,4 +62,5 @@ class History
 
         return $this;
     }
+
 }
