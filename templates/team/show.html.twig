@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Team
+{% endblock %}
+
+{% block body %}
+	{% include 'parts/navWithChevron.html.twig' %}
+
+	<div class="p-8">
+		<div class="px-4 sm:px-0">
+			<h3 class="text-base/7 font-semibold text-gray-900">{{ team.name }}</h3>
+			<p class="mt-1 max-w-2xl text-sm/6 text-gray-500">
+				<i>
+					<small>{{ team.id }}</small>
+				</i>
+			</p>
+		</div>
+		<div class="mt-6 border-t border-gray-100">
+			<dl class="divide-y divide-gray-100">
+				<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<dt class="text-sm/6 font-medium text-gray-900">Name</dt>
+					<dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ team.name }}</dd>
+				</div>
+				<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<dt class="text-sm/6 font-medium text-gray-900">Description</dt>
+					<dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ team.description }}</dd>
+				</div>
+				<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<dt class="text-sm/6 font-medium text-gray-900">CreatedAt
+						<br/>
+						UpdatedAt</dt>
+					<dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
+						<time datetime="{{ team.CreatedAt ? team.CreatedAt|date('d-m-Y H:i:s') : '' }}">
+							{{ team.CreatedAt ? team.CreatedAt|date('d/m/y H:i:s') : '' }}</time>
+						<br>
+						<time datetime="{{ team.UpdatedAt ? team.UpdatedAt|date('d-m-Y H:i:s') : '' }}">
+							{{ team.UpdatedAt ? team.UpdatedAt|date('d/m/y H:i:s') : '' }}</time>
+					</dd>
+				</div>
+				<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<dt class="text-sm/6 font-medium text-gray-900">Attachments</dt>
+					<dd class="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+						<ul role="list" class="divide-y divide-gray-100 rounded-md border border-gray-200">
+							{% for user in team.UserId %}
+								<li class="flex items-center justify-between py-4 pr-5 pl-4 text-sm/6">
+									<div class="flex w-0 flex-1 items-center">
+										<img src="https://ui-avatars.com/api/?background=random&name={{ user.firstname }} {{ user.lastname }}" alt="picture" class="size-12 flex-none rounded-lg bg-white object-cover ring-1 ring-gray-900/10">
+										<div class="ml-4 flex min-w-0 flex-1 gap-2">
+											<span class="truncate font-medium">{{ user.firstname }}
+												{{ user.lastname }}</span>
+											<span class="shrink-0 text-gray-400">{{ user.id }}</span>
+										</div>
+									</div>
+									<div class="ml-4 shrink-0">
+										<a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">See</a>
+									</div>
+								</li>
+								{% if not loop.last %}{% endif %}
+							{% endfor %}
+						</ul>
+					</dd>
+				</div>
+			</dl>
+		</div>
+	</div>
+	<div class="flex justify-center">
+		<span class="isolate inline-flex rounded-md shadow-xs">
+			<a href="{{ path('app_team_edit', {'id': team.id}) }}">
+				<button type="button" class="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-10">Edit</button>
+			</a>
+			{{ include('team/_delete_form.html.twig') }}
+		</span>
+	</div>
+{% endblock %}

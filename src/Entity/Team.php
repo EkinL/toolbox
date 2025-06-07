@@ -2,13 +2,14 @@
 
 namespace App\Entity;
 
-use App\Enum\ToolboxStatusEnum;
-use App\Repository\ToolboxRepository;
+use App\Repository\TeamRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 
-#[ORM\Entity(repositoryClass: ToolboxRepository::class)]
-class Toolbox
+#[ORM\Entity(repositoryClass: TeamRepository::class)]
+class Team
 {
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
@@ -17,7 +18,7 @@ class Toolbox
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $title = null;
+    private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
@@ -28,13 +29,17 @@ class Toolbox
     #[ORM\Column]
     private ?\DateTimeImmutable $UpdatedAt = null;
 
-    #[ORM\Column(enumType: ToolboxStatusEnum::class)]
-    private ?ToolboxStatusEnum $status = null;
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'team')]
+    private Collection $userId;
 
     public function __construct()
     {
         $this->CreatedAt = new \DateTimeImmutable();
         $this->UpdatedAt = new \DateTimeImmutable();
+        $this->userId = new ArrayCollection();
     }
 
     public function getId(): ?Uuid
@@ -42,14 +47,14 @@ class Toolbox
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getName(): ?string
     {
-        return $this->title;
+        return $this->name;
     }
 
-    public function setTitle(string $title): static
+    public function setName(string $name): static
     {
-        $this->title = $title;
+        $this->name = $name;
 
         return $this;
     }
@@ -90,14 +95,32 @@ class Toolbox
         return $this;
     }
 
-    public function getStatus(): ?ToolboxStatusEnum
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUserId(): Collection
     {
-        return $this->status;
+        return $this->userId;
     }
 
-    public function setStatus(ToolboxStatusEnum $status): static
+    public function addUserId(User $userId): static
     {
-        $this->status = $status;
+        if (!$this->userId->contains($userId)) {
+            $this->userId->add($userId);
+            $userId->setTeam($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserId(User $userId): static
+    {
+        if ($this->userId->removeElement($userId)) {
+            // set the owning side to null (unless already changed)
+            if ($userId->getTeam() === $this) {
+                $userId->setTeam(null);
+            }
+        }
 
         return $this;
     }

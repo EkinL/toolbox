@@ -1,0 +1,91 @@
+<div x-data="{ currentTab: 'all' }" class="relative pb-5 sm:pb-0">
+	<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-6">
+		<div class="md:flex md:items-center md:justify-between">
+			<h3 class="text-base font-semibold text-gray-900">Teams</h3>
+			<div class="mt-3 flex">
+				<button type="button" class="ml-3 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500">Create team</button>
+			</div>
+		</div>
+
+		<!-- Onglets mobile (select) -->
+		<div class="mt-4 sm:hidden">
+			<select x-model="currentTab" class="w-full rounded-md border-gray-300 py-2 pr-8 pl-3 text-base text-gray-900">
+				<option value="all">all</option>
+				{% for team in teams %}
+					<option value="{{ team.name }}">{{ team.name }}</option>
+				{% endfor %}
+			</select>
+		</div>
+
+		<!-- Onglets desktop -->
+		<div class="hidden sm:block mt-4">
+			<nav class="-mb-px flex space-x-8 overflow-x-auto border-b border-gray-200">
+				<a href="#" @click.prevent="currentTab = 'all'" :class="currentTab === 'all' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'" class="px-1 pb-4 text-sm font-medium border-b-2 whitespace-nowrap">
+					all
+				</a>
+				{% for team in teams %}
+					<a href="#" @click.prevent="currentTab = '{{ team.name }}'" :class="currentTab === '{{ team.name }}' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'" class="px-1 pb-4 text-sm font-medium border-b-2 whitespace-nowrap">
+						{{ team.name }}
+					</a>
+				{% endfor %}
+			</nav>
+		</div>
+	</div>
+
+	<!-- Contenu dynamique -->
+	<div>
+		<!-- Tous les utilisateurs -->
+		<div x-show="currentTab === 'all'" x-cloak>
+			<ul class="grid grid-cols-1 gap-4 pt-8 px-8">
+				{% for team in teams %}
+					<li class="border p-4 rounded-md shadow-sm">
+						<h4 class="font-bold">{{ team.name }}</h4>
+						<ul class="ml-4 list-disc">
+							{% for user in usersByTeam[team.name] %}
+								<li>{{ user.email }}</li>
+							{% else %}
+								<li>
+									<em>Aucun utilisateur</em>
+								</li>
+							{% endfor %}
+						</ul>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+
+		<!-- Onglets spécifiques -->
+		{% for team in teams %}
+			<div x-show="currentTab === '{{ team.name }}'" x-cloak>
+				<h4 class="text-xl font-semibold px-4 pt-6">{{ team.name }}</h4>
+				<ul class="list-disc pl-8 py-4">
+					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+						{% for user in usersByTeam[team.name] %}
+							<div class="relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-xs focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400">
+								<div class="shrink-0">
+									<img class="size-10 rounded-full" src="https://ui-avatars.com/api/?background=random&name={{user.Lastname}}" alt="">
+								</div>
+								<div class="min-w-0 flex-1">
+									<a href="#" class="focus:outline-hidden">
+										<span class="absolute inset-0" aria-hidden="true"></span>
+										<p class="text-sm font-medium text-gray-900">{{ user.Firstname }}
+											{{ user.Lastname }}</p>
+										<p class="truncate text-sm text-gray-500">{{ user.email }}</p>
+									</a>
+								</div>
+							</div>
+
+							<!-- More people... -->
+
+						{% else %}
+							<li>
+								<em>Aucun utilisateur</em>
+							</li>
+						{% endfor %}
+					</div>
+				</ul>
+			</div>
+
+		{% endfor %}
+
+	</div>
