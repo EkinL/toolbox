@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AppLauncherController
 {
-    #[Route('/launch-app/{id}', name: 'launch_app')]
+    #[Route('/launch-app/{id}', name: 'app_toolbox_launch')]
     public function launchApp(Toolbox $toolbox): Response
     {
         $output = null;
