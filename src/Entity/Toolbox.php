@@ -4,6 +4,9 @@ namespace App\Entity;
 
 use App\Enum\ToolboxStatusEnum;
 use App\Repository\ToolboxRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 
@@ -31,10 +34,20 @@ class Toolbox
     #[ORM\Column(enumType: ToolboxStatusEnum::class)]
     private ?ToolboxStatusEnum $status = null;
 
+    /**
+     * @var Collection<int, Team>
+     */
+    #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'toolboxes')]
+    private Collection $teamId;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $link = null;
+
     public function __construct()
     {
         $this->CreatedAt = new \DateTimeImmutable();
         $this->UpdatedAt = new \DateTimeImmutable();
+        $this->teamId = new ArrayCollection();
     }
 
     public function getId(): ?Uuid
@@ -98,6 +111,42 @@ class Toolbox
     public function setStatus(ToolboxStatusEnum $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Team>
+     */
+    public function getTeamId(): Collection
+    {
+        return $this->teamId;
+    }
+
+    public function addTeamId(Team $teamId): static
+    {
+        if (!$this->teamId->contains($teamId)) {
+            $this->teamId->add($teamId);
+        }
+
+        return $this;
+    }
+
+    public function removeTeamId(Team $teamId): static
+    {
+        $this->teamId->removeElement($teamId);
+
+        return $this;
+    }
+
+    public function getLink(): ?string
+    {
+        return $this->link;
+    }
+
+    public function setLink(?string $link): static
+    {
+        $this->link = $link;
 
         return $this;
     }

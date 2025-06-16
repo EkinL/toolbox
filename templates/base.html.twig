@@ -58,15 +58,7 @@
 												</a>
 											</li>
 											<li>
-												<a href="#" class="group flex gap-x-3 rounded-md p-2 text-lg font-semibold text-indigo-200 hover:bg-indigo-700 hover:text-white">
-													<svg class="size-8 shrink-0 text-indigo-200 group-hover:text-white" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
-														<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"/>
-													</svg>
-													Projects
-												</a>
-											</li>
-											<li>
-												<a href="#" class="group flex gap-x-3 rounded-md p-2 text-lg font-semibold text-indigo-200 hover:bg-indigo-700 hover:text-white">
+												<a href=" {{path('app_history_index')}} " class="group flex gap-x-3 rounded-md p-2 text-lg font-semibold text-indigo-200 hover:bg-indigo-700 hover:text-white">
 													<svg class="size-8 shrink-0 text-indigo-200 group-hover:text-white" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
 														<path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/>
 													</svg>
@@ -142,22 +134,16 @@
 											Team
 										</a>
 									</li>
-									<li>
-										<a href="#" class="group flex gap-x-3 rounded-md p-2 text-lg font-semibold text-indigo-200 hover:bg-indigo-700 hover:text-white">
-											<svg class="size-8 shrink-0 text-indigo-200 group-hover:text-white" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
-												<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"/>
-											</svg>
-											Projects
-										</a>
-									</li>
-									<li>
-										<a href="#" class="group flex gap-x-3 rounded-md p-2 text-lg font-semibold text-indigo-200 hover:bg-indigo-700 hover:text-white">
-											<svg class="size-8 shrink-0 text-indigo-200 group-hover:text-white" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
-												<path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/>
-											</svg>
-											History
-										</a>
-									</li>
+									{% if is_granted('ROLE_ADMIN') %}
+										<li>
+											<a href="{{ path('app_history_index') }}" class="group flex gap-x-3 rounded-md p-2 text-lg font-semibold {{ app.request.attributes.get('_route') starts with 'app_history_' ? 'bg-indigo-700 text-white' : 'text-indigo-200 hover:bg-indigo-700 hover:text-white' }}">
+												<svg class="size-8 shrink-0 {{ app.request.attributes.get('_route') starts with 'app_history_' ? 'text-white' : 'text-indigo-200 group-hover:text-white' }}" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+													<path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/>
+												</svg>
+												History
+											</a>
+										</li>
+									{% endif %}
 								</ul>
 							</li>
 							<li>
@@ -165,20 +151,8 @@
 								<ul role="list" class="-mx-2 mt-2 space-y-1">
 									<li>
 										<a href="#" class="group flex gap-x-3 rounded-md p-2 text-lg font-semibold text-indigo-200 hover:bg-indigo-700 hover:text-white">
-											<span class="flex size-8 shrink-0 items-center justify-center rounded-lg border border-indigo-400 bg-indigo-500 text-[0.625rem] font-medium text-white">H</span>
-											<span class="truncate">Heroicons</span>
-										</a>
-									</li>
-									<li>
-										<a href="#" class="group flex gap-x-3 rounded-md p-2 text-lg font-semibold text-indigo-200 hover:bg-indigo-700 hover:text-white">
-											<span class="flex size-8 shrink-0 items-center justify-center rounded-lg border border-indigo-400 bg-indigo-500 text-[0.625rem] font-medium text-white">T</span>
-											<span class="truncate">Tailwind Labs</span>
-										</a>
-									</li>
-									<li>
-										<a href="#" class="group flex gap-x-3 rounded-md p-2 text-lg font-semibold text-indigo-200 hover:bg-indigo-700 hover:text-white">
-											<span class="flex size-8 shrink-0 items-center justify-center rounded-lg border border-indigo-400 bg-indigo-500 text-[0.625rem] font-medium text-white">W</span>
-											<span class="truncate">Workcation</span>
+											<span class="flex size-8 shrink-0 items-center justify-center rounded-lg border border-indigo-400 bg-indigo-500 text-[0.625rem] font-medium text-white">{{ app.user.team.name|slice(0, 1)|upper }}</span>
+											<span class="truncate">{{ app.user.team.name }}</span>
 										</a>
 									</li>
 								</ul>
@@ -226,7 +200,7 @@
 							<div class="relative group">
 								<button type="button" class="-m-1.5 flex items-center p-1.5" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
 									<span class="sr-only">Open user menu</span>
-									<img class="size-10 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+									<img class="size-10 rounded-full bg-gray-50" src="https://ui-avatars.com/api/?background=random&name={{ app.user.lastName }}" alt="{{ app.user.lastName }} {{ app.user.firstName }}">
 									<span class="hidden lg:flex lg:items-center">
 										<span class="ml-4 text-lg font-semibold text-gray-900" aria-hidden="true">{{ app.user.lastName }}&nbsp;{{ app.user.firstName }}</span>
 										<svg class="ml-2 size-8 text-gray-400" viewbox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
@@ -234,10 +208,6 @@
 										</svg>
 									</span>
 								</button>
-								<div class="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none opacity-0 scale-95 transition-all duration-300 ease-in-out group-focus-within:opacity-100 group-focus-within:scale-100" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
-									<a href="#" class="block px-3 py-1 text-lg text-gray-900" role="menuitem" tabindex="-1" id="user-menu-item-0">Your profile</a>
-									<a href="#" class="block px-3 py-1 text-lg text-gray-900" role="menuitem" tabindex="-1" id="user-menu-item-1">Sign out</a>
-								</div>
 							</div>
 
 						</div>

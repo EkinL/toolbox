@@ -1,13 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!
+{% block title %}Toolbox
 {% endblock %}
 
 {% block body %}
 	<section class="p-12">
 		<ul role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-			{% for toolbox in toolbox %}
-				{% include 'parts/cards.html.twig' %}
+			{% for toolbox in toolboxes %}
+				{% include 'parts/cards.html.twig' with { toolbox: toolbox } %}
+			{% else %}
+				<li class="col-span-full text-center text-gray-500">
+					Aucune toolbox disponible pour votre équipe.
+				</li>
 			{% endfor %}
 		</ul>
 	</section>

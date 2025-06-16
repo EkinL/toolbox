@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -44,6 +46,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToOne(inversedBy: 'userId')]
     private ?Team $team = null;
+
+    /**
+     * @var Collection<int, History>
+     */
+    #[ORM\OneToMany(targetEntity: History::class, mappedBy: 'userId')]
+    private Collection $histories;
+
+    public function __construct()
+    {
+        $this->histories = new ArrayCollection();
+    }
 
     public function getId(): ?Uuid
     {
@@ -150,6 +163,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setTeam(?Team $team): static
     {
         $this->team = $team;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, History>
+     */
+    public function getHistories(): Collection
+    {
+        return $this->histories;
+    }
+
+    public function addHistory(History $history): static
+    {
+        if (!$this->histories->contains($history)) {
+            $this->histories->add($history);
+            $history->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHistory(History $history): static
+    {
+        if ($this->histories->removeElement($history)) {
+            // set the owning side to null (unless already changed)
+            if ($history->getUserId() === $this) {
+                $history->setUserId(null);
+            }
+        }
 
         return $this;
     }

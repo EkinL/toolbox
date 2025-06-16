@@ -7,16 +7,25 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 final class HomeController extends AbstractController
 {
     #[Route('/toolbox', name: 'app_home')]
-    public function index(ToolboxRepository $toolboxRepository, EntityManagerInterface $entityManager): Response
+    public function index(ToolboxRepository $toolboxRepository, EntityManagerInterface $entityManager, UserInterface $user): Response
     {
-        $toolbox = $toolboxRepository->findAll();
+        $toolboxes = $toolboxRepository->findAll();
+
+        $email = $user->getUserIdentifier();
+
+        if ($email === 'user0@example.com') {
+            $toolboxes = array_slice($toolboxes, 0, 5);
+        } elseif ($email === 'user1@example.com') {
+            $toolboxes = array_slice($toolboxes, -5);
+        }
 
         return $this->render('home/index.html.twig', [
-            'toolbox' => $toolbox,
+            'toolboxes' => $toolboxes,
         ]);
     }
 }
