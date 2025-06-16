@@ -5,31 +5,35 @@ namespace App\Controller;
 use App\Entity\Toolbox;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class AppLauncherController extends AbstractController
+class AppLauncherController
 {
-    #[Route('/toolbox/launch/{id}', name: 'app_toolbox_launch')]
+    #[Route('/launch-app/{id}', name: 'launch_app')]
     public function launchApp(Toolbox $toolbox): Response
     {
+        $output = null;
+        $returnCode = null;
+
+        // Récupère le lien du script depuis la base de données
         $link = $toolbox->getLink();
 
         if (!$link) {
-            return new Response("❌ Aucun lien de lancement défini pour cet outil.", 400);
+            return new Response("Aucun lien de script défini pour cet outil.", 400);
         }
 
-        // Normalise le chemin pour PowerShell (slash ou double backslash)
-        $normalizedPath = str_replace('\\', '/', $link);
+        // Remplace les backslashes pour éviter les problèmes d’interprétation
+        $scriptPath = str_replace('\\', '/', $link);
 
-        // Commande PowerShell : ouvre un nouveau terminal avec le script Python
-        $psCommand = 'Start-Process cmd -ArgumentList \'/k python "' . $normalizedPath . '" & pause\'';
+        // Compose la commande CMD pour exécuter le script Python dans un nouveau terminal
+        $command = 'cmd.exe /c start "" cmd /k "python ' . $scriptPath . ' & pause"';
 
-        // Construction de la commande complète
-        $fullCommand = 'powershell -Command ' . escapeshellarg($psCommand);
+        // Exécution de la commande
+        exec($command, $output, $returnCode);
 
-        // Exécution
-        shell_exec($fullCommand);
+        if ($returnCode !== 0) {
+            return new Response("Erreur lors de l\'ouverture du script Python", 500);
+        }
 
-        return new Response("✅ Script Python lancé dans un nouveau terminal Windows !");
+        return new Response("Script Python lancé avec succès !");
     }
 }
