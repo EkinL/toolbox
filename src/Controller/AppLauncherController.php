@@ -18,19 +18,16 @@ class AppLauncherController extends AbstractController
             return new Response("❌ Aucun lien de lancement défini pour cet outil.", 400);
         }
 
-        // Remplace les backslashes pour éviter les erreurs dans le .bat
+        // Normalise le chemin pour Windows (slashs acceptés)
         $normalizedPath = str_replace('\\', '/', $link);
+        $scriptPath = escapeshellarg($normalizedPath);
 
-        // Crée un fichier .bat temporaire dans le dossier temporaire de Windows
-        $batContent = '@echo off' . PHP_EOL;
-        $batContent .= 'start "" cmd /k python "' . $normalizedPath . '" & pause' . PHP_EOL;
+        // Commande pour ouvrir un nouveau terminal, exécuter le script et garder la fenêtre ouverte
+        $command = 'start "" cmd /k python ' . $scriptPath . ' & pause';
 
-        $batPath = sys_get_temp_dir() . '\launch_toolbox_script.bat';
-        file_put_contents($batPath, $batContent);
+        // Lancer la commande via shell_exec pour exécution réelle (non bloquante)
+        shell_exec($command);
 
-        // Lancer le .bat avec start (ouvre une nouvelle fenêtre)
-        shell_exec('start "" "' . $batPath . '"');
-
-        return new Response("✅ Script Python lancé via .bat !");
+        return new Response("✅ Script Python lancé dans une nouvelle fenêtre !");
     }
 }
