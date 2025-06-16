@@ -27,20 +27,15 @@ class AppLauncherController extends AbstractController
         // $em->persist($history);
         // $em->flush();
 
-        // Normaliser le chemin : remplacer les backslashes par des slashs
+        // Remplace les backslashes par des slashs, et échappe le chemin
         $normalizedPath = str_replace('\\', '/', $link);
-        $scriptPath = escapeshellarg($normalizedPath); // sécurise les espaces et caractères spéciaux
+        $scriptPath = escapeshellarg($normalizedPath);
 
-        // Commande Windows pour exécuter le script Python dans une nouvelle fenêtre CMD
-        $command = 'cmd.exe /c start "" "cmd /k python ' . $scriptPath . ' & pause"';
+        // Commande correcte pour exécuter le script dans un nouveau terminal Windows
+        $command = 'start "" cmd /k python ' . $scriptPath . ' & pause';
 
-        $output = null;
-        $returnCode = null;
-        exec($command, $output, $returnCode);
-
-        if ($returnCode !== 0) {
-            return new Response("Erreur lors de l'exécution du script", 500);
-        }
+        // Utiliser shell_exec ou popen (pas exec) pour bien lancer avec interface
+        pclose(popen($command, 'r'));
 
         return new Response("Script lancé avec succès !");
     }
