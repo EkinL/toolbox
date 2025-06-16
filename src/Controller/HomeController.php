@@ -16,14 +16,12 @@ final class HomeController extends AbstractController
     {
         $toolboxes = $toolboxRepository->findAll();
 
-        // Récupération de l'email de l'utilisateur connecté
-        $email = $user->getUserIdentifier(); // ou $user->getEmail() si ta classe User a cette méthode
+        $email = $user->getUserIdentifier();
 
-        // Filtrage selon l'email
         if ($email === 'user0@example.com') {
-            $toolboxes = array_slice($toolboxes, 0, 5); // Affiche les 5 premières
+            $toolboxes = array_slice($toolboxes, 0, 5);
         } elseif ($email === 'user1@example.com') {
-            $toolboxes = array_slice($toolboxes, -5); // Affiche les 5 dernières
+            $toolboxes = array_slice($toolboxes, -5);
         }
 
         return $this->render('home/index.html.twig', [
