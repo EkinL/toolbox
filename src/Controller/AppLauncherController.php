@@ -22,12 +22,12 @@ class AppLauncherController extends AbstractController
         }
 
         // 2. Crée une ligne dans l'historique
-        $history = new History();
-        $history->setToolbox($toolbox);
-        $history->setCreatedAt(new \DateTimeImmutable());
+        // $history = new History();
+        // $history->setToolbox($toolbox);
+        // $history->setCreatedAt(new \DateTimeImmutable());
 
-        $em->persist($history);
-        $em->flush();
+        // $em->persist($history);
+        // $em->flush();
 
         // 3. Lance le script dans le terminal via AppleScript (macOS uniquement)
         $escapedCommand = escapeshellcmd($link);
