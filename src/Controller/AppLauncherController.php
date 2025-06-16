@@ -27,8 +27,11 @@ class AppLauncherController extends AbstractController
         // $em->persist($history);
         // $em->flush();
 
-        // 🔧 Format correct pour exécuter un script Python dans cmd.exe sur Windows
-        $scriptPath = $link; // sécurise les espaces dans le chemin
+        // Normaliser le chemin : remplacer les backslashes par des slashs
+        $normalizedPath = str_replace('\\', '/', $link);
+        $scriptPath = escapeshellarg($normalizedPath); // sécurise les espaces et caractères spéciaux
+
+        // Commande Windows pour exécuter le script Python dans une nouvelle fenêtre CMD
         $command = 'cmd.exe /c start "" cmd /k "python ' . $scriptPath . ' & pause"';
 
         $output = null;
@@ -36,7 +39,7 @@ class AppLauncherController extends AbstractController
         exec($command, $output, $returnCode);
 
         if ($returnCode !== 0) {
-            return new Response("Erreur lors de l\'exécution du script", 500);
+            return new Response("Erreur lors de l'exécution du script", 500);
         }
 
         return new Response("Script lancé avec succès !");
