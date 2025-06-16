@@ -32,7 +32,7 @@ class AppLauncherController extends AbstractController
         $scriptPath = escapeshellarg($normalizedPath); // sécurise les espaces et caractères spéciaux
 
         // Commande Windows pour exécuter le script Python dans une nouvelle fenêtre CMD
-        $command = 'cmd.exe /c start "" cmd /k "python ' . $scriptPath . ' & pause"';
+        $command = 'cmd.exe /c start "" "cmd /k python ' . $scriptPath . ' & pause"';
 
         $output = null;
         $returnCode = null;
