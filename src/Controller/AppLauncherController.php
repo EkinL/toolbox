@@ -18,16 +18,18 @@ class AppLauncherController extends AbstractController
             return new Response("❌ Aucun lien de lancement défini pour cet outil.", 400);
         }
 
-        // Normalise le chemin pour Windows (slashs acceptés)
+        // Normalise le chemin pour PowerShell (slash ou double backslash)
         $normalizedPath = str_replace('\\', '/', $link);
-        $scriptPath = escapeshellarg($normalizedPath);
 
-        // Commande pour ouvrir un nouveau terminal, exécuter le script et garder la fenêtre ouverte
-        $command = 'start "" cmd /k python ' . $scriptPath . ' & pause';
+        // Commande PowerShell : ouvre un nouveau terminal avec le script Python
+        $psCommand = 'Start-Process cmd -ArgumentList \'/k python "' . $normalizedPath . '" & pause\'';
 
-        // Lancer la commande via shell_exec pour exécution réelle (non bloquante)
-        shell_exec($command);
+        // Construction de la commande complète
+        $fullCommand = 'powershell -Command ' . escapeshellarg($psCommand);
 
-        return new Response("✅ Script Python lancé dans une nouvelle fenêtre !");
+        // Exécution
+        shell_exec($fullCommand);
+
+        return new Response("✅ Script Python lancé dans un nouveau terminal Windows !");
     }
 }
