@@ -3,8 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Toolbox;
-use App\Entity\History;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,35 +10,27 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class AppLauncherController extends AbstractController
 {
     #[Route('/toolbox/launch/{id}', name: 'app_toolbox_launch')]
-    public function launchApp(Toolbox $toolbox, EntityManagerInterface $em): Response
+    public function launchApp(Toolbox $toolbox): Response
     {
         $link = $toolbox->getLink();
 
         if (!$link) {
-            return new Response("Aucun lien de lancement défini pour cet outil.", 400);
+            return new Response("❌ Aucun lien de lancement défini pour cet outil.", 400);
         }
 
-        // Facultatif : enregistrer l'historique
-        // $history = new History();
-        // $history->setToolbox($toolbox);
-        // $history->setCreatedAt(new \DateTimeImmutable());
-        // $em->persist($history);
-        // $em->flush();
+        // Remplace les backslashes pour éviter les erreurs dans le .bat
+        $normalizedPath = str_replace('\\', '/', $link);
 
-        // 🔧 Normalisation du chemin
-        $normalizedPath = str_replace('\\', '/', $link); // Windows accepte les slashs
-        $scriptPath = escapeshellarg($normalizedPath); // sécurise le chemin
+        // Crée un fichier .bat temporaire dans le dossier temporaire de Windows
+        $batContent = '@echo off' . PHP_EOL;
+        $batContent .= 'start "" cmd /k python "' . $normalizedPath . '" & pause' . PHP_EOL;
 
-        // 🧪 Pour debug visuel : retour complet
-        $command = 'cmd /c start "" cmd /k python ' . $scriptPath . ' & pause';
+        $batPath = sys_get_temp_dir() . '\launch_toolbox_script.bat';
+        file_put_contents($batPath, $batContent);
 
-        try {
-            // Lancement dans une fenêtre visible
-            pclose(popen($command, 'r'));
+        // Lancer le .bat avec start (ouvre une nouvelle fenêtre)
+        shell_exec('start "" "' . $batPath . '"');
 
-            return new Response("✅ Script lancé dans une nouvelle fenêtre !");
-        } catch (\Exception $e) {
-            return new Response("❌ Erreur lors du lancement : " . $e->getMessage(), 500);
-        }
+        return new Response("✅ Script Python lancé via .bat !");
     }
 }
