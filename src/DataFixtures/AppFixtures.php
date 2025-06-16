@@ -59,7 +59,7 @@ class AppFixtures extends Fixture
         $toolboxEntities = [];
 
         // Création des toolboxes
-        for ($i = 0; $i < 10; ++$i) {
+        for ($i = 0; $i < 30; ++$i) {
             $toolbox = new Toolbox();
             $toolbox->setTitle('Toolbox'.$i);
             $toolbox->setDescription('Description of Toolbox'.$i);
@@ -74,7 +74,7 @@ class AppFixtures extends Fixture
         }
 
         foreach ($toolboxEntities as $toolbox) {
-            $randomTeams = array_rand($teamEntities, rand(1, 3));
+            $randomTeams = array_rand($teamEntities, rand(1, 5));
             foreach ((array) $randomTeams as $key) {
                 $toolbox->addTeamId($teamEntities[$key]);
             }

@@ -17,6 +17,12 @@ final class HistoryController extends AbstractController
     #[Route(name: 'app_history_index', methods: ['GET'])]
     public function index(HistoryRepository $historyRepository): Response
     {
+
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('error', 'Vous n\'avez pas la permission d\'accéder à cette page.');
+            return $this->redirectToRoute('app_home');
+        }
+
         return $this->render('history/index.html.twig', [
             'histories' => $historyRepository->findAll(),
         ]);
@@ -25,6 +31,10 @@ final class HistoryController extends AbstractController
         #[Route('/export', name: 'app_history_export', methods: ['GET'])]
     public function export(HistoryRepository $historyRepository): Response
     {
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('error', 'Vous n\'avez pas la permission d\'accéder à cette page.');
+            return $this->redirectToRoute('app_home');
+        }
         $histories = $historyRepository->findAll();
 
         $csvRows = [['Nom', 'Email', 'Titre', 'Date']];
@@ -56,6 +66,12 @@ final class HistoryController extends AbstractController
     #[Route('/new', name: 'app_history_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('error', 'Vous n\'avez pas la permission d\'accéder à cette page.');
+            return $this->redirectToRoute('app_home');
+        }
+
         $history = new History();
         $form = $this->createForm(HistoryForm::class, $history);
         $form->handleRequest($request);
