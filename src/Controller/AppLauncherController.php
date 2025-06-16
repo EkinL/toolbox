@@ -14,33 +14,31 @@ class AppLauncherController extends AbstractController
     #[Route('/toolbox/launch/{id}', name: 'app_toolbox_launch')]
     public function launchApp(Toolbox $toolbox, EntityManagerInterface $em): Response
     {
-        // 1. Vérifie que le lien est bien défini
         $link = $toolbox->getLink();
 
         if (!$link) {
             return new Response("Aucun lien de lancement défini pour cet outil.", 400);
         }
 
-        // 2. Crée une ligne dans l'historique
+        // Facultatif : enregistrer l'historique
         // $history = new History();
         // $history->setToolbox($toolbox);
         // $history->setCreatedAt(new \DateTimeImmutable());
-
         // $em->persist($history);
         // $em->flush();
 
-        // 3. Lance le script dans le terminal via AppleScript (macOS uniquement)
-        $escapedCommand = escapeshellcmd($link);
-        $script = sprintf('osascript -e \'tell application "Terminal" to do script "%s"\'', $escapedCommand);
+        // 🔧 Format correct pour exécuter un script Python dans cmd.exe sur Windows
+        $scriptPath = escapeshellarg($link); // sécurise les espaces dans le chemin
+        $command = 'cmd.exe /c start "" cmd /k "python ' . $scriptPath . ' & pause"';
 
         $output = null;
         $returnCode = null;
-        exec($script, $output, $returnCode);
+        exec($command, $output, $returnCode);
 
         if ($returnCode !== 0) {
-            return new Response("Erreur lors du lancement de l'application.", 500);
+            return new Response("Erreur lors de l\'exécution du script", 500);
         }
 
-        return new Response("Application lancée et historique enregistré !");
+        return new Response("Script lancé avec succès !");
     }
 }
