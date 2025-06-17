@@ -21,7 +21,13 @@ final class HomeController extends AbstractController
         if ($email === 'user0@example.com') {
             $toolboxes = array_slice($toolboxes, 0, 5);
         } elseif ($email === 'user1@example.com') {
-            $toolboxes = array_slice($toolboxes, -5);
+            $toolboxes = array_slice($toolboxes, 6, 1);
+        } elseif ($email === 'user2@example.com') {
+            $toolboxes = array_slice($toolboxes, 7, 1);
+        } elseif ($email === 'user3@example.com') {
+            $toolboxes = array_slice($toolboxes, 8, 2);
+        } elseif ($email === 'user4@example.com') {
+            $toolboxes = array_slice($toolboxes, 11, 1);
         }
 
         return $this->render('home/index.html.twig', [
